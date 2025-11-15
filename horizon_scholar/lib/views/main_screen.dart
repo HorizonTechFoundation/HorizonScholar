@@ -18,13 +18,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    HomeScreen(),
-    CGPAScreen(),
-    CourseScreen(),
-    VaultScreen(),
-    // SettingsScreen(),
-  ];
+  
 
   void _onItemTapped(int index) {
     setState(() {
@@ -32,10 +26,23 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      HomeScreen(onNavigate: _changeTab),
+      CGPAScreen(),
+      CourseScreen(),
+      VaultScreen(),
+      // SettingsScreen(),
+    ];
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: const Color(0xFFF6F1F1),
