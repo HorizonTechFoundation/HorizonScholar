@@ -49,8 +49,8 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 0,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: const Color(0xFF146C94),
-        unselectedItemColor: const Color(0xFF19A7CE),
+        selectedItemColor: const Color(0xFF19A7CE),
+        unselectedItemColor: const Color( 0xFF146C94),
         selectedLabelStyle: GoogleFonts.poppins(
           fontWeight: FontWeight.w600,
           fontSize: 13,
@@ -66,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.table_view),
+            icon: Icon(Icons.calculate),
             label: "CGPA",
           ),
           BottomNavigationBarItem(
