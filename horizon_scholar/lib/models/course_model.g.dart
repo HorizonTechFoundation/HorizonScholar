@@ -21,13 +21,14 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       isCompleted: fields[1] as bool,
       certificationPath: fields[2] as String,
       courseDescription: fields[3] as String,
+      categories: (fields[4] as List?)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, CourseModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.courseName)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       ..writeByte(2)
       ..write(obj.certificationPath)
       ..writeByte(3)
-      ..write(obj.courseDescription);
+      ..write(obj.courseDescription)
+      ..writeByte(4)
+      ..write(obj.categories);
   }
 
   @override

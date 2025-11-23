@@ -29,8 +29,7 @@ class CGPAScreen extends StatelessWidget {
                 // TITLE
                 Text(
                   "CGPA Calculator",
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
+                  style: GoogleFonts.righteous(
                       fontSize: 20,
                       color: Color.fromARGB(255, 0, 0, 0),
                     ),
