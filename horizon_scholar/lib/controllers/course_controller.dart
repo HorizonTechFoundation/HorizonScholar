@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import '../models/course_model.dart';
 import 'package:hive/hive.dart';
+import './document_controller.dart';
+
 
 class CourseController extends GetxController {
   var courseList = <CourseModel>[].obs;
@@ -28,14 +30,22 @@ class CourseController extends GetxController {
   void addCourse(CourseModel course) {
     courseBox.add(course);
     loadCourse();
+    Get.find<DocumentController>().syncFromCourses();
   }
 
   void updateCourse(int index, CourseModel newCourse) {
     courseBox.putAt(index, newCourse);
     loadCourse();
+    Get.find<DocumentController>().syncFromCourses();
   }
 
   void deleteCourse(int index) {
+    final course = courseList[index];
+    final docCtrl = Get.find<DocumentController>();
+    docCtrl.documents.removeWhere((d) =>
+        d.path == course.certificationPath);
+    docCtrl.documents.refresh();
+
     courseBox.deleteAt(index);
     loadCourse();
   }
@@ -45,7 +55,7 @@ class CourseController extends GetxController {
     final set = <String>{};
 
     for (final c in courseList) {
-      final cats = c.categories ?? [];
+      final cats = c.categories;
       set.addAll(cats);
     }
 
@@ -81,7 +91,7 @@ class CourseController extends GetxController {
     } else {
       // treat filter as category name
       list = list.where(
-        (c) => (c.categories ?? []).contains(filter),
+        (c) => (c.categories).contains(filter),
       );
     }
 

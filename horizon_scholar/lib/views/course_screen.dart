@@ -22,7 +22,7 @@ class CourseScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddCourseDialog(context),
         backgroundColor: Color(0xFFAFD3E2),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.black),
       ),
 
       body: SafeArea(
@@ -82,7 +82,7 @@ class CourseScreen extends StatelessWidget {
                       ),
                       Container(
                         width: 3,
-                        height: 50,
+                        height: 70,
                         color: const Color(0xFF146C94),
                       ),
                       Expanded(
@@ -109,7 +109,7 @@ class CourseScreen extends StatelessWidget {
                 );
               }),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
               // ---- Filter row: status + categories + +Category ----
               Obx(() {
@@ -723,7 +723,7 @@ class CourseScreen extends StatelessWidget {
         TextEditingController(text: course.certificationPath);
     final isCompleted = course.isCompleted.obs;
     final selectedCategories =
-        (course.categories ?? <String>[]).toList().obs;
+        (course.categories).toList().obs;
 
     final selectedFileName = (course.certificationPath.isNotEmpty
             ? course.certificationPath

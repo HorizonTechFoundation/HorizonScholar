@@ -20,14 +20,15 @@ class DocumentModelAdapter extends TypeAdapter<DocumentModel> {
       title: fields[0] as String,
       path: fields[1] as String,
       type: fields[2] as String,
-      isFav: fields[3] as String,
+      isFav: fields[3] as bool,
+      categories: (fields[4] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, DocumentModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class DocumentModelAdapter extends TypeAdapter<DocumentModel> {
       ..writeByte(2)
       ..write(obj.type)
       ..writeByte(3)
-      ..write(obj.isFav);
+      ..write(obj.isFav)
+      ..writeByte(4)
+      ..write(obj.categories);
   }
 
   @override

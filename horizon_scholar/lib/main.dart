@@ -28,7 +28,7 @@ void main() async {
   Hive.registerAdapter(CourseModelAdapter());
 
   await Hive.openBox<CgpaModel>('cgpaBox');
-  await Hive.openBox<DocumentModel>('documentBox');
+  await Hive.openBox<DocumentModel>('documentsBoxV2');
   await Hive.openBox<CourseModel>('courseBox');
   
   runApp(MyApp());

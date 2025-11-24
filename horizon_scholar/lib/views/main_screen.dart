@@ -49,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 0,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: const Color(0xFF19A7CE),
+        selectedItemColor: const Color.fromARGB(255, 114, 188, 209),
         unselectedItemColor: const Color( 0xFF146C94),
         selectedLabelStyle: GoogleFonts.poppins(
           fontWeight: FontWeight.w600,
