@@ -13,40 +13,49 @@ class CourseScreen extends StatelessWidget {
 
   CourseScreen({super.key});
 
+  static const _bgColor = Color(0xFFF6F1F1);
+  static const _primary = Color(0xFF146C94);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F1F1),
+      backgroundColor: _bgColor,
 
       // ---------- FAB ADD BUTTON ----------
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddCourseDialog(context),
-        backgroundColor: Color(0xFFAFD3E2),
-        child: const Icon(Icons.add, color: Colors.black),
+      floatingActionButton: SizedBox(
+        height: 56,
+        width: 56,
+        child: FloatingActionButton(
+          onPressed: () => _showAddCourseDialog(context),
+          backgroundColor: _primary,
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
 
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ---- Title + small add icon (top-right) ----
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Course Manager",
-                    style: GoogleFonts.righteous(
-                      fontSize: 22,
-                      color: Colors.black,
-                    ),
-                  ),
-                  
-                ],
+              // ---- Title ----
+              Text(
+                "Course Manager",
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "Track your learning & certificates",
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.grey[700],
+                ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
 
               // ---- Stats card (Completed / Pending) ----
               Obx(() {
@@ -54,10 +63,18 @@ class CourseScreen extends StatelessWidget {
                 final pending = courseController.pendingCount;
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 18, horizontal: 14),
                   decoration: BoxDecoration(
                     color: const Color(0xFFAFD3E2),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                        color: Colors.black.withOpacity(0.06),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
@@ -67,23 +84,26 @@ class CourseScreen extends StatelessWidget {
                           children: [
                             Text(
                               "$completed",
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
+                              style: GoogleFonts.poppins(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               "Completed",
-                              style: TextStyle(fontSize: 12),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
                       ),
                       Container(
-                        width: 3,
-                        height: 70,
-                        color: const Color(0xFF146C94),
+                        width: 1.5,
+                        height: 50,
+                        color: _primary,
                       ),
                       Expanded(
                         child: Column(
@@ -91,15 +111,18 @@ class CourseScreen extends StatelessWidget {
                           children: [
                             Text(
                               "$pending",
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
+                              style: GoogleFonts.poppins(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               "Pending",
-                              style: TextStyle(fontSize: 12),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
@@ -109,7 +132,7 @@ class CourseScreen extends StatelessWidget {
                 );
               }),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 22),
 
               // ---- Filter row: status + categories + +Category ----
               Obx(() {
@@ -118,28 +141,25 @@ class CourseScreen extends StatelessWidget {
 
                 Widget buildFilterChip(String label) {
                   final isSelected = current == label;
-                  return GestureDetector(
-                    onTap: () => courseController.selectedFilter.value = label,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 10,
-                      ),
-                      margin: const EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF146C94)
-                            : const Color(0xFFE6E6E6),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: ChoiceChip(
+                      label: Text(
                         label,
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : Colors.black87,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
+                      selected: isSelected,
+                      showCheckmark: false,
+                      backgroundColor: const Color(0xFFE5E5E5),
+                      selectedColor: _primary,
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                      ),
+                      onSelected: (_) =>
+                          courseController.selectedFilter.value = label,
                     ),
                   );
                 }
@@ -151,30 +171,31 @@ class CourseScreen extends StatelessWidget {
                       buildFilterChip('All'),
                       buildFilterChip('Completed'),
                       buildFilterChip('Pending'),
-                      
-                      ...categories.map((cat) => buildFilterChip(cat)).toList(),
+                      ...categories.map(buildFilterChip).toList(),
                       GestureDetector(
                         onTap: () => _showAddCategoryDialog(context),
                         child: Container(
                           margin: const EdgeInsets.only(left: 4),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
+                            horizontal: 12,
+                            vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFAFD3E2),
-                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFFE5E5E5),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.add, size: 16, color: Color.fromARGB(255, 0, 0, 0)),
+                            children: const [
+                              Icon(Icons.add,
+                                  size: 16, color: Colors.black87),
                               SizedBox(width: 4),
                               Text(
                                 "Category",
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
@@ -186,7 +207,7 @@ class CourseScreen extends StatelessWidget {
                 );
               }),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
 
               // ---- Course list ----
               Expanded(
@@ -194,38 +215,41 @@ class CourseScreen extends StatelessWidget {
                   final courses = courseController.filteredCourses;
 
                   if (courses.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
-                        "No Course data found",
-                        style: TextStyle(fontSize: 14),
+                        "No courses yet.\nTap + to add one.",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     );
                   }
 
                   return ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 80),
                     itemCount: courses.length,
                     itemBuilder: (context, index) {
                       final course = courses[index];
-
-                      // original index in main list (filtered list is subset)
                       final originalIndex =
                           courseController.courseList.indexOf(course);
 
                       return GestureDetector(
-                        onTap: () =>
-                            _showEditCourseDialog(context, course, originalIndex),
+                        onTap: () => _showEditCourseDialog(
+                            context, course, originalIndex),
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 12),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                blurRadius: 4,
+                                blurRadius: 6,
                                 spreadRadius: 1,
-                                offset: const Offset(0, 2),
-                                color: Colors.black.withOpacity(0.05),
+                                offset: const Offset(0, 3),
+                                color: Colors.black.withOpacity(0.06),
                               ),
                             ],
                           ),
@@ -238,7 +262,7 @@ class CourseScreen extends StatelessWidget {
                                 height: 56,
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFD8D8D8),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: _buildCertificatePreview(
                                   course.certificationPath,
@@ -253,8 +277,8 @@ class CourseScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       course.courseName,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                       ),
                                     ),
@@ -263,97 +287,16 @@ class CourseScreen extends StatelessWidget {
                                       course.courseDescription,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
+                                      style: GoogleFonts.poppins(
                                         fontSize: 11,
                                         color: Colors.grey[700],
                                       ),
                                     ),
-                                    const SizedBox(height: 6),
-                                    
-                                    // CATEGORY if Any
-                                    // if (course.categories.isNotEmpty)
-                                    // Builder(
-                                    //   builder: (context) {
-                                    //     final cats = course.categories;
-
-                                    //     const maxCharLength = 18; // limit by characters
-                                    //     int currentLength = 0;
-
-                                    //     List<String> visibleCats = [];
-                                    //     List<String> hiddenCats = [];
-
-                                    //     for (var cat in cats) {
-                                    //       if (currentLength + cat.length <= maxCharLength) {
-                                    //         visibleCats.add(cat);
-                                    //         currentLength += cat.length;
-                                    //       } else {
-                                    //         hiddenCats.add(cat);
-                                    //       }
-                                    //     }
-
-                                    //     final remainingCount = hiddenCats.length;
-
-                                    //     return Row(
-                                    //       children: [
-                                    //         // visible chips WITH SPACING
-                                    //         ...visibleCats.map((cat) {
-                                    //           return Padding(
-                                    //             padding: const EdgeInsets.only(right: 6), // <-- SPACE HERE
-                                    //             child: Chip(
-                                    //               backgroundColor: const Color(0xFFD6E6F2),
-                                    //               label: Text(
-                                    //                 cat,
-                                    //                 style: const TextStyle(
-                                    //                   fontSize: 10,
-                                    //                   color: Color(0xFF0A4D68),
-                                    //                   fontWeight: FontWeight.w400,
-                                    //                 ),
-                                    //               ),
-                                    //               labelPadding: const EdgeInsets.symmetric(horizontal: 6),
-                                    //               visualDensity: const VisualDensity(
-                                    //                 horizontal: -4,
-                                    //                 vertical: -4,
-                                    //               ),
-                                    //               shape: RoundedRectangleBorder(
-                                    //                 borderRadius: BorderRadius.circular(8),
-                                    //               ),
-                                    //             ),
-                                    //           );
-                                    //         }).toList(),
-
-                                    //         // "+N more" chip WITH spacing
-                                    //         if (remainingCount > 0)
-                                    //           Padding(
-                                    //             padding: const EdgeInsets.only(left: 6),
-                                    //             child: Chip(
-                                    //               backgroundColor: const Color(0xFFEAF0F6),
-                                    //               label: Text(
-                                    //                 '+$remainingCount more',
-                                    //                 style: const TextStyle(
-                                    //                   fontSize: 10,
-                                    //                   color: Color(0xFF555555),
-                                    //                   fontWeight: FontWeight.w500,
-                                    //                 ),
-                                    //               ),
-                                    //               labelPadding: const EdgeInsets.symmetric(horizontal: 6),
-                                    //               visualDensity: const VisualDensity(
-                                    //                 horizontal: -4,
-                                    //                 vertical: -4,
-                                    //               ),
-                                    //               shape: RoundedRectangleBorder(
-                                    //                 borderRadius: BorderRadius.circular(8),
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //       ],
-                                    //     );
-                                    //   },
-                                    // ),
-
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 8),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.symmetric(
@@ -363,12 +306,16 @@ class CourseScreen extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             color: course.isCompleted
                                                 ? Colors.green.withOpacity(0.1)
-                                                : Colors.orange.withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(3),
+                                                : Colors.orange
+                                                    .withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                           ),
                                           child: Text(
-                                            course.isCompleted ? "Completed" : "Pending",
-                                            style: TextStyle(
+                                            course.isCompleted
+                                                ? "Completed"
+                                                : "Pending",
+                                            style: GoogleFonts.poppins(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w600,
                                               color: course.isCompleted
@@ -459,7 +406,7 @@ class CourseScreen extends StatelessWidget {
       context: context,
       builder: (ctx) {
         return Dialog(
-          backgroundColor: Color(0xFFF6F1F1),
+          backgroundColor: const Color(0xFFF6F1F1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
@@ -474,9 +421,9 @@ class CourseScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Add Course",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                         ),
@@ -497,7 +444,7 @@ class CourseScreen extends StatelessWidget {
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       prefixIcon: const Icon(Icons.menu_book_outlined),
                       filled: true,
-                      fillColor: const Color.fromARGB(255, 255, 255, 255),
+                      fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -512,10 +459,9 @@ class CourseScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       labelText: "Course description",
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      
                       prefixIcon: const Icon(Icons.description_outlined),
                       filled: true,
-                      fillColor: const Color.fromARGB(255, 255, 255, 255),
+                      fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -532,7 +478,7 @@ class CourseScreen extends StatelessWidget {
                       children: [
                         Text(
                           "Certificate (optional)",
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 13,
                             color: Colors.grey[700],
                             fontWeight: FontWeight.w500,
@@ -542,7 +488,7 @@ class CourseScreen extends StatelessWidget {
                         FilledButton.icon(
                           onPressed: _pickCertificate,
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF146C94),
+                            backgroundColor: _primary,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -573,17 +519,21 @@ class CourseScreen extends StatelessWidget {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Categories",
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           TextButton.icon(
                             onPressed: () => _showAddCategoryDialog(context),
-                            icon: const Icon(Icons.add, size: 16, color: Color(0xFF146C94)),
-                            label: const Text("Add category" ,style: TextStyle(color: Color(0xFF146C94))),
+                            icon: const Icon(Icons.add,
+                                size: 16, color: _primary),
+                            label: const Text(
+                              "Add category",
+                              style: TextStyle(color: _primary),
+                            ),
                           ),
                         ],
                       );
@@ -595,17 +545,21 @@ class CourseScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               "Categories",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             TextButton.icon(
                               onPressed: () => _showAddCategoryDialog(context),
-                              icon: const Icon(Icons.add, size: 16, color: Color(0xFF146C94)),
-                              label: const Text("New", style: TextStyle(color: Color(0xFF146C94))),
+                              icon: const Icon(Icons.add,
+                                  size: 16, color: _primary),
+                              label: const Text(
+                                "New",
+                                style: TextStyle(color: _primary),
+                              ),
                             ),
                           ],
                         ),
@@ -617,9 +571,10 @@ class CourseScreen extends StatelessWidget {
                             final isSelected =
                                 selectedCategories.contains(cat);
                             return ChoiceChip(
-                              backgroundColor: Color(0xFFE9E9E9),
+                              backgroundColor: const Color(0xFFE9E9E9),
                               selectedColor: const Color(0xFFAFD3E2),
                               label: Text(cat),
+                              showCheckmark: false,
                               selected: isSelected,
                               onSelected: (val) {
                                 if (val) {
@@ -640,10 +595,13 @@ class CourseScreen extends StatelessWidget {
                   Obx(
                     () => SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text("Completed"),
+                      title: Text(
+                        "Completed",
+                        style: GoogleFonts.poppins(fontSize: 14),
+                      ),
                       value: isCompleted.value,
                       activeColor: Colors.white,
-                      activeTrackColor: const Color(0xFF146C94),
+                      activeTrackColor: _primary,
                       onChanged: (val) => isCompleted.value = val,
                     ),
                   ),
@@ -655,12 +613,15 @@ class CourseScreen extends StatelessWidget {
                     children: [
                       TextButton(
                         onPressed: () => Navigator.of(ctx).pop(),
-                        child: const Text("Cancel", style: TextStyle(color: Color(0xFF146C94))),
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: _primary),
+                        ),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF146C94),
+                          backgroundColor: _primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -722,8 +683,7 @@ class CourseScreen extends StatelessWidget {
     final certPathController =
         TextEditingController(text: course.certificationPath);
     final isCompleted = course.isCompleted.obs;
-    final selectedCategories =
-        (course.categories).toList().obs;
+    final selectedCategories = (course.categories).toList().obs;
 
     final selectedFileName = (course.certificationPath.isNotEmpty
             ? course.certificationPath
@@ -749,7 +709,7 @@ class CourseScreen extends StatelessWidget {
       context: context,
       builder: (ctx) {
         return Dialog(
-          backgroundColor: Color(0xFFF6F1F1),
+          backgroundColor: const Color(0xFFF6F1F1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
@@ -764,9 +724,9 @@ class CourseScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Edit Course",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                         ),
@@ -787,7 +747,7 @@ class CourseScreen extends StatelessWidget {
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       prefixIcon: const Icon(Icons.menu_book_outlined),
                       filled: true,
-                      fillColor: const Color.fromARGB(255, 255, 255, 255),
+                      fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -801,11 +761,10 @@ class CourseScreen extends StatelessWidget {
                     controller: descController,
                     decoration: InputDecoration(
                       labelText: "Course description",
-                      //alignLabelWithHint: true,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       prefixIcon: const Icon(Icons.description_outlined),
                       filled: true,
-                      fillColor: const Color.fromARGB(255, 255, 255, 255),
+                      fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -822,7 +781,7 @@ class CourseScreen extends StatelessWidget {
                       children: [
                         Text(
                           "Certificate (optional)",
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 13,
                             color: Colors.grey[700],
                             fontWeight: FontWeight.w500,
@@ -831,7 +790,7 @@ class CourseScreen extends StatelessWidget {
                         const SizedBox(height: 6),
                         FilledButton.icon(
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF146C94),
+                            backgroundColor: _primary,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -863,17 +822,21 @@ class CourseScreen extends StatelessWidget {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Categories",
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           TextButton.icon(
                             onPressed: () => _showAddCategoryDialog(context),
-                            icon: const Icon(Icons.add, size: 16, color: Color(0xFF146C94)),
-                            label: const Text("Add category", style: TextStyle(color: Color(0xFF146C94))),
+                            icon: const Icon(Icons.add,
+                                size: 16, color: _primary),
+                            label: const Text(
+                              "Add category",
+                              style: TextStyle(color: _primary),
+                            ),
                           ),
                         ],
                       );
@@ -885,17 +848,21 @@ class CourseScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               "Categories",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             TextButton.icon(
                               onPressed: () => _showAddCategoryDialog(context),
-                              icon: const Icon(Icons.add, size: 16, color: Color(0xFF146C94)),
-                              label: const Text("New", style: TextStyle(color: Color(0xFF146C94))),
+                              icon: const Icon(Icons.add,
+                                  size: 16, color: _primary),
+                              label: const Text(
+                                "New",
+                                style: TextStyle(color: _primary),
+                              ),
                             ),
                           ],
                         ),
@@ -907,9 +874,10 @@ class CourseScreen extends StatelessWidget {
                             final isSelected =
                                 selectedCategories.contains(cat);
                             return ChoiceChip(
-                              backgroundColor: Color(0xFFE9E9E9),
+                              backgroundColor: const Color(0xFFE9E9E9),
                               selectedColor: const Color(0xFFAFD3E2),
                               label: Text(cat),
+                              showCheckmark: false,
                               selected: isSelected,
                               onSelected: (val) {
                                 if (val) {
@@ -930,9 +898,12 @@ class CourseScreen extends StatelessWidget {
                   Obx(
                     () => SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text("Completed"),
+                      title: Text(
+                        "Completed",
+                        style: GoogleFonts.poppins(fontSize: 14),
+                      ),
                       activeColor: Colors.white,
-                      activeTrackColor: const Color(0xFF146C94),
+                      activeTrackColor: _primary,
                       value: isCompleted.value,
                       onChanged: (val) => isCompleted.value = val,
                     ),
@@ -948,30 +919,80 @@ class CourseScreen extends StatelessWidget {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (confirmCtx) => AlertDialog(
-                              backgroundColor: Color(0xFFF6F1F1),
-                              title: const Text("Delete course"),
-                              content: const Text(
-                                "Are you sure you want to delete this course?",
+                            builder: (confirmCtx) => Dialog(
+                              backgroundColor: const Color(0xFFF6F1F1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(confirmCtx).pop(),
-                                  child: const Text("Cancel", style: TextStyle(color: Color(0xFF146C94))),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    20, 18, 20, 12),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Delete course",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () =>
+                                              Navigator.of(confirmCtx).pop(),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      "Are you sure you want to delete this course?",
+                                      style: GoogleFonts.poppins(fontSize: 13),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(confirmCtx).pop(),
+                                          child: const Text(
+                                            "Cancel",
+                                            style:
+                                                TextStyle(color: _primary),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            courseController
+                                                .deleteCourse(index);
+                                            Navigator.of(confirmCtx).pop();
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Delete",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                TextButton(
-                                  onPressed: () {
-                                    courseController.deleteCourse(index);
-                                    Navigator.of(confirmCtx).pop();
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  child: const Text(
-                                    "Delete",
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           );
                         },
@@ -989,12 +1010,15 @@ class CourseScreen extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.of(ctx).pop(),
-                            child: const Text("Cancel", style: TextStyle(color: Color(0xFF146C94))),
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(color: _primary),
+                            ),
                           ),
                           const SizedBox(width: 8),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF146C94),
+                              backgroundColor: _primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -1056,7 +1080,7 @@ class CourseScreen extends StatelessWidget {
       context: context,
       builder: (ctx) {
         return Dialog(
-          backgroundColor: Color(0xFFF6F1F1),
+          backgroundColor: const Color(0xFFF6F1F1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -1065,9 +1089,9 @@ class CourseScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   "New Category",
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1078,7 +1102,7 @@ class CourseScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: "Category name",
                     filled: true,
-                    fillColor: const Color.fromARGB(255, 255, 255, 255),
+                    fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -1091,7 +1115,10 @@ class CourseScreen extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.of(ctx).pop(),
-                      child: const Text("Cancel", style: TextStyle(color: Color(0xFF146C94))),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: _primary),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
@@ -1103,7 +1130,7 @@ class CourseScreen extends StatelessWidget {
                         Navigator.of(ctx).pop();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF146C94),
+                        backgroundColor: _primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

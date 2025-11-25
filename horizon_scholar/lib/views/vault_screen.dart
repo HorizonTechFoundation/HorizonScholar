@@ -56,12 +56,21 @@ class VaultScreen extends StatelessWidget {
             children: [
               Text(
                 "Document Vault",
-                style: GoogleFonts.righteous(
+                style: GoogleFonts.poppins(
                   fontSize: 22,
-                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 4),
+              Text(
+                "Store and manage your documents efficently",
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.grey[700],
+                ),
+              ),
+
+              const SizedBox(height: 18),
               _CategoryBar(
                 controller: controller,
                 primary: primary,
@@ -123,6 +132,8 @@ class VaultScreen extends StatelessWidget {
   }
 
   // ---------- helpers ----------
+
+  
 
   Future<void> _openDocument(DocumentModel doc) async {
     await OpenFilex.open(doc.path);
@@ -879,7 +890,7 @@ class _DocumentCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               color: cardColor,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   blurRadius: 6,
@@ -895,7 +906,7 @@ class _DocumentCard extends StatelessWidget {
                     margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: _buildPreview(),
                   ),
@@ -967,7 +978,7 @@ class _DocumentCard extends StatelessWidget {
       final file = File(document.path);
       return file.existsSync()
           ? ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(10),
               child: SizedBox.expand(
                 child: Image.file(
                   file,
@@ -982,7 +993,7 @@ class _DocumentCard extends StatelessWidget {
     else if (_isPdf) {
       return Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF6F1F1),
+          color: const Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Center(

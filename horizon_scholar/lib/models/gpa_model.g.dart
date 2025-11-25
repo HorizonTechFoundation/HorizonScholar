@@ -1,35 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'cgpa_model.dart';
+part of 'gpa_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CgpaModelAdapter extends TypeAdapter<CgpaModel> {
+class GpaModelAdapter extends TypeAdapter<GpaModel> {
   @override
-  final int typeId = 3;
+  final int typeId = 5;
 
   @override
-  CgpaModel read(BinaryReader reader) {
+  GpaModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return CgpaModel(
-      cgpa: fields[0] as double,
-      currentSem: fields[1] as int,
+    return GpaModel(
+      semester: fields[0] as int,
+      gpa: fields[1] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, CgpaModel obj) {
+  void write(BinaryWriter writer, GpaModel obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.cgpa)
+      ..write(obj.semester)
       ..writeByte(1)
-      ..write(obj.currentSem);
+      ..write(obj.gpa);
   }
 
   @override
@@ -38,7 +38,7 @@ class CgpaModelAdapter extends TypeAdapter<CgpaModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CgpaModelAdapter &&
+      other is GpaModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

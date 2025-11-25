@@ -39,16 +39,32 @@ class CourseController extends GetxController {
     Get.find<DocumentController>().syncFromCourses();
   }
 
+  // void deleteCourse(int index) {
+  //   final course = courseList[index];
+  //   final docCtrl = Get.find<DocumentController>();
+  //   docCtrl.documents.removeWhere((d) =>
+  //       d.path == course.certificationPath);
+  //   docCtrl.documents.refresh();
+
+  //   courseBox.deleteAt(index);
+  //   loadCourse();
+  // }
+
   void deleteCourse(int index) {
     final course = courseList[index];
-    final docCtrl = Get.find<DocumentController>();
-    docCtrl.documents.removeWhere((d) =>
-        d.path == course.certificationPath);
-    docCtrl.documents.refresh();
+    final certPath = course.certificationPath;
 
+    // delete from courseBox
     courseBox.deleteAt(index);
     loadCourse();
+
+    // also delete linked document from vault
+    if (certPath.isNotEmpty) {
+      final docCtrl = Get.find<DocumentController>();
+      docCtrl.deleteCourseDocumentsByPath(certPath);
+    }
   }
+
 
   // ---------- Categories ----------
   void _refreshCategories() {

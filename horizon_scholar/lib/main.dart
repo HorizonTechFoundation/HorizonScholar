@@ -17,6 +17,10 @@ import "views/vault_screen.dart";
 import 'models/cgpa_model.dart';
 import 'models/document_model.dart';
 import 'models/course_model.dart';
+import 'models/subject_model.dart';
+import 'models/gpa_model.dart';
+
+import 'controllers/cgpa_calc_controller.dart';
 
 // =====
 
@@ -26,10 +30,18 @@ void main() async {
   Hive.registerAdapter(CgpaModelAdapter());
   Hive.registerAdapter(DocumentModelAdapter());
   Hive.registerAdapter(CourseModelAdapter());
+  Hive.registerAdapter(SubjectModelAdapter());
+  Hive.registerAdapter(GpaModelAdapter());
+
 
   await Hive.openBox<CgpaModel>('cgpaBox');
   await Hive.openBox<DocumentModel>('documentsBoxV2');
   await Hive.openBox<CourseModel>('courseBox');
+  await Hive.openBox<SubjectModel>('subjectBox');
+  await Hive.openBox<GpaModel>('gpaBox');
+
+  Get.put(CgpaCalcController(), permanent: true);
+
   
   runApp(MyApp());
 }

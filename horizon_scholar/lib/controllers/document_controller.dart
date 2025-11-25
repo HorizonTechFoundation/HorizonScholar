@@ -101,39 +101,83 @@ class DocumentController extends GetxController {
       categories.add(trimmed);
     }
   }
-  void syncFromCourses() {
+
+  Future<void> deleteCourseDocumentsByPath(String path) async {
+    // Delete from Hive box
+    final toDelete = _box.values.where(
+      (d) => d.path == path && d.categories.contains('Course'),
+    );
+
+    for (final doc in toDelete.toList()) {
+      await doc.delete(); // HiveObject.delete()
+    }
+
+    // Delete from in-memory list
+    documents.removeWhere(
+      (d) => d.path == path && d.categories.contains('Course'),
+    );
+    documents.refresh();
+  }
+
+
+  Future<void> syncFromCourses() async {
     final courseBox = Hive.box<CourseModel>('courseBox');
 
+    // 1) Collect all valid certificate paths from existing courses
+    final validCoursePaths = <String>{};
     for (final course in courseBox.values) {
-      if (course.certificationPath.isEmpty) continue;
+      if (course.certificationPath.isNotEmpty) {
+        validCoursePaths.add(course.certificationPath);
+      }
+    }
 
-      // check if already added
+    // 2) Remove orphan "Course" documents
+    final orphanDocs = documents
+        .where(
+          (d) => d.categories.contains('Course') &&
+                !validCoursePaths.contains(d.path),
+        )
+        .toList();
+
+    for (final doc in orphanDocs) {
+      await doc.delete();     // remove from Hive
+      documents.remove(doc);  // remove from memory
+    }
+
+    // 3) Ensure the "Course" category exists
+    if (!categories.contains('Course')) {
+      categories.add('Course');
+    }
+
+    // 4) Add missing documents for existing courses
+    for (final course in courseBox.values) {
+      final certPath = course.certificationPath;
+      if (certPath.isEmpty) continue;
+
       final exists = documents.any(
-        (d) => d.path == course.certificationPath,
+        (d) =>
+            d.path == certPath &&
+            d.categories.contains('Course'),
       );
 
       if (!exists) {
-        final type = course.certificationPath.split('.').last.toLowerCase();
+        final type = certPath.split('.').last.toLowerCase();
 
-        final doc = DocumentModel(
+        final newDoc = DocumentModel(
           title: course.courseName,
-          path: course.certificationPath,
+          path: certPath,
           type: type,
-          categories: ["Course"],
           isFav: false,
+          categories: ['Course'],
         );
 
-        _box.add(doc);
-        documents.add(doc);
-
-        // ensure category exists
-        if (!categories.contains("Course")) {
-          categories.add("Course");
-        }
+        await _box.add(newDoc);
+        documents.add(newDoc);
       }
     }
 
     documents.refresh();
   }
+
 
 }
