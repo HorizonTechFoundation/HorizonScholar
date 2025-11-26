@@ -70,11 +70,11 @@ class _MainScreenState extends State<MainScreen> {
             label: "CGPA",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.file_copy),
+            icon: Icon(Icons.menu_book),
             label: "Courses",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.document_scanner),
+            icon: Icon(Icons.lock),
             label: "Vault",
           ),
           BottomNavigationBarItem(

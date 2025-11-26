@@ -143,8 +143,10 @@ class VaultScreen extends StatelessWidget {
     final titleCtrl = TextEditingController();
     final selectedCategories = <String>[].obs;
     final isFav = false.obs;
-    String? pickedPath;
-    String? pickedType;
+
+    // 🔥 Make these reactive so Obx rebuilds when they change
+    final pickedPath = RxnString();
+    final pickedType = RxnString();
 
     await showDialog(
       context: context,
@@ -199,15 +201,15 @@ class VaultScreen extends StatelessWidget {
                         );
 
                         if (result != null && result.files.single.path != null) {
-                          pickedPath = result.files.single.path!;
-                          pickedType = p
-                              .extension(pickedPath!)
+                          pickedPath.value = result.files.single.path!;
+                          pickedType.value = p
+                              .extension(pickedPath.value!)
                               .replaceFirst('.', '')
                               .toLowerCase();
 
                           if (titleCtrl.text.trim().isEmpty) {
                             titleCtrl.text =
-                                p.basenameWithoutExtension(pickedPath!);
+                                p.basenameWithoutExtension(pickedPath.value!);
                           }
                         }
                       },
@@ -224,9 +226,9 @@ class VaultScreen extends StatelessWidget {
                       ),
                       icon: const Icon(Icons.upload_file),
                       label: Text(
-                        pickedPath == null
+                        pickedPath.value == null
                             ? "Choose file"
-                            : p.basename(pickedPath!),
+                            : p.basename(pickedPath.value!),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -285,7 +287,6 @@ class VaultScreen extends StatelessWidget {
                           .toList(),
                     ),
 
-                    // Add new category
                     TextButton.icon(
                       onPressed: () async {
                         final newCat =
@@ -336,18 +337,18 @@ class VaultScreen extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            if (pickedPath == null ||
-                                pickedType == null ||
+                            if (pickedPath.value == null ||
+                                pickedType.value == null ||
                                 titleCtrl.text.trim().isEmpty) return;
 
-                            if (selectedCategories.isEmpty) {
-                              selectedCategories.add("Important");
-                            }
+                            // if (selectedCategories.isEmpty) {
+                            //   selectedCategories.add("Important");
+                            // }
 
                             final doc = DocumentModel(
                               title: titleCtrl.text.trim(),
-                              path: pickedPath!,
-                              type: pickedType!,
+                              path: pickedPath.value!,
+                              type: pickedType.value!,
                               isFav: isFav.value,
                               categories: selectedCategories.toList(),
                             );
@@ -356,8 +357,8 @@ class VaultScreen extends StatelessWidget {
                             Navigator.of(ctx).pop();
                           },
                           child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 6),
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             child: Text(
                               "Save",
                               style: TextStyle(color: Colors.white),
@@ -375,6 +376,7 @@ class VaultScreen extends StatelessWidget {
       },
     );
   }
+
 
   Future<bool> _confirmDeleteDialog(BuildContext context) async {
     return await showDialog<bool>(
