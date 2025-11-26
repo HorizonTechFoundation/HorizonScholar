@@ -6,7 +6,7 @@ import 'home_screen.dart';
 import 'cgpa_screen.dart';
 import 'course_screen.dart';
 import 'vault_screen.dart';
-// import 'settings_screen.dart';
+import 'settings_screen.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,8 +17,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-
-  
 
   void _onItemTapped(int index) {
     setState(() {
@@ -39,51 +37,84 @@ class _MainScreenState extends State<MainScreen> {
       CGPAScreen(),
       CourseScreen(),
       VaultScreen(),
-      // SettingsScreen(),
+      SettingsScreen(),
     ];
+
     return Scaffold(
-      body: pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFFF6F1F1),
-        elevation: 0,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: const Color.fromARGB(255, 114, 188, 209),
-        unselectedItemColor: const Color( 0xFF146C94),
-        selectedLabelStyle: GoogleFonts.poppins(
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-        ),
-        unselectedLabelStyle: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-          fontSize: 12,
-        ),
-        showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calculate),
-            label: "CGPA",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: "Courses",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.lock),
-            label: "Vault",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: pages,
+      ),
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    final icons = [
+      Icons.home_rounded,
+      Icons.calculate,
+      Icons.menu_book,
+      Icons.lock,
+      Icons.settings,
+    ];
+
+    final labels = ["Home", "CGPA", "Courses", "Vault", "Settings"];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(icons.length, (index) {
+          final isSelected = _selectedIndex == index;
+
+          return GestureDetector(
+            onTap: () => _onItemTapped(index),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              padding: EdgeInsets.symmetric(
+                horizontal: isSelected ? 18 : 12,
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected ? const Color(0xFF146C94) : Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    icons[index],
+                    size: 22,
+                    color: isSelected ? Colors.white : Colors.grey[700],
+                  ),
+                  if (isSelected) ...[
+                    const SizedBox(width: 8),
+                    Text(
+                      labels[index],
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
 }
-

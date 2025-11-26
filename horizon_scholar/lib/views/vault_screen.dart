@@ -50,7 +50,7 @@ class VaultScreen extends StatelessWidget {
       // ),
       body: SafeArea(
         child:Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20),
+          padding: const EdgeInsets.only(top: 20, bottom: 0, left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

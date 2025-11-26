@@ -38,7 +38,6 @@ class HomeScreen extends StatelessWidget {
           final latest = cgpaController.latestCgpa;
           final cgpa = latest?.cgpa ?? 0.0;
           final currentSem = latest?.currentSem ?? 0;
-          final percentage = cgpa == 0.0 ? 0 : (cgpa / 10 * 100).round();
 
           // ----- COURSE & DOC DATA -----
           final completedCourses = courseController.completedCount;
@@ -46,7 +45,7 @@ class HomeScreen extends StatelessWidget {
           final recentDocs = documentController.documents.reversed.take(3).toList();
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -106,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                 // TOP CGPA CARD
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+                  padding: const EdgeInsets.only(top: 20, bottom: 20,right: 18, left: 30),
                   decoration: BoxDecoration(
                     color: _accent,
                     borderRadius: BorderRadius.circular(18),
@@ -129,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                               cgpa == 0.0 ? "--" : cgpa.toStringAsFixed(2),
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w700,
-                                fontSize: 34,
+                                fontSize: 46,
                                 color: _primary,
                               ),
                             ),
@@ -137,31 +136,8 @@ class HomeScreen extends StatelessWidget {
                             Text(
                               "Current CGPA",
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: Colors.black87,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.percent, size: 16, color: _primary.withOpacity(0.9)),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    cgpa == 0.0 ? "No data yet" : "$percentage%",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: _primary,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ],
@@ -208,9 +184,9 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {
                               onNavigate?.call(1);
                             },
-                            icon: const Icon(Icons.calculate_outlined, size: 18, color: Colors.white),
+                            icon: const Icon(Icons.auto_awesome, size: 18, color: Colors.white),
                             label: Text(
-                              "Update CGPA",
+                              "Try New AI Features",
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,

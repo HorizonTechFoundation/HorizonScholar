@@ -34,7 +34,7 @@ class CourseScreen extends StatelessWidget {
 
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
