@@ -16,14 +16,20 @@ class SubjectModel extends HiveObject {
   @HiveField(3)
   String grade; // "O", "A+", "A", etc.
 
-  @HiveField(4, defaultValue: 'None')  // <--- default for old stuff
-  String code;                     // <--- now NON-nullable
+  @HiveField(4, defaultValue: 'None')
+  String code;
+
+  // Example: "21^25$CB^CS^AD$3^4^5"
+  // Meaning: regulations = [21, 25], dept = [CB, CS, AD], sem = [3, 4, 5]
+  @HiveField(5, defaultValue: '')
+  String metaMapping;
 
   SubjectModel({
     required this.semester,
     required this.name,
     required this.credits,
     this.grade = '',
-    required this.code,           // <--- required
+    required this.code,
+    required this.metaMapping,
   });
 }

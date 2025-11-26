@@ -9,7 +9,6 @@ import 'cgpa_controller.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
-
 class CgpaCalcController extends GetxController {
   late Box<SubjectModel> subjectBox;
   late Box<GpaModel> gpaBox;
@@ -45,6 +44,10 @@ class CgpaCalcController extends GetxController {
     _seedTemplatesFromCsvIfEmpty();
   }
 
+  // ----------------------------------------------------------------------------
+  // CSV seeding (templates)
+  // ----------------------------------------------------------------------------
+
   Future<void> _seedTemplatesFromCsvIfEmpty() async {
     // If there are already templates (semester == 0), do nothing
     final hasTemplates = subjects.any((s) => s.semester == 0);
@@ -56,10 +59,9 @@ class CgpaCalcController extends GetxController {
 
       // 2. Split into lines
       final lines = const LineSplitter().convert(csvString);
-
       if (lines.isEmpty) return;
 
-      // 3. Assume first line is header: code,name,credits
+      // 3. Assume first line is header: code,name,credits,metaMapping
       //    Start from index 1
       final List<SubjectModel> templateList = [];
 
@@ -78,7 +80,9 @@ class CgpaCalcController extends GetxController {
         final code = parts[0].trim();
         final name = parts[1].trim();
         final creditsStr = parts[2].trim();
-        final credits = double.tryParse(creditsStr) ?? 0;
+        final meta = parts.length >= 4 ? parts[3].trim() : '';
+
+        final credits = double.tryParse(creditsStr) ?? 0.0;
 
         if (code.isEmpty || name.isEmpty || credits <= 0) {
           // Invalid row → skip
@@ -91,6 +95,7 @@ class CgpaCalcController extends GetxController {
           credits: credits,
           grade: '',       // template has no grade
           code: code,
+          metaMapping: meta, // e.g. "21^25$CB^CS^AD$3^4^5"
         );
 
         templateList.add(subject);
@@ -108,7 +113,7 @@ class CgpaCalcController extends GetxController {
     }
   }
 
-
+  // ----------------------------------------------------------------------------
 
   void _loadData() {
     subjects.assignAll(subjectBox.values);
@@ -146,13 +151,13 @@ class CgpaCalcController extends GetxController {
       credits: credits,
       grade: grade,
       code: code.trim(),
+      metaMapping: '', // manual subjects: no meta-mapping
     );
 
     await subjectBox.add(subject);
     subjects.add(subject);
     await recalculateAll();
   }
-
 
   /// Add subject for a semester from a template (template has semester = 0)
   Future<void> addSubjectFromTemplate(
@@ -170,13 +175,13 @@ class CgpaCalcController extends GetxController {
       credits: template.credits,
       grade: '',
       code: template.code.trim(),
+      metaMapping: template.metaMapping, // carry over for filtering
     );
 
     await subjectBox.add(subject);
     subjects.add(subject);
     await recalculateAll();
   }
-
 
   /// Remove a subject from a semester
   Future<void> removeSubject(SubjectModel subject) async {
@@ -287,5 +292,46 @@ class CgpaCalcController extends GetxController {
   /// Used by "Calculate & Save CGPA" button – just recomputes everything
   Future<void> calculateAndSave() async {
     await recalculateAll();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Helper for filtering by metaMapping (reg, dept, sem)
+  // ---------------------------------------------------------------------------
+
+  /// metaMapping format example: "21^25$CB^CS^AD$3^4^5"
+  ///  - regs   = ["21", "25"]
+  ///  - depts  = ["CB", "CS", "AD"]
+  ///  - sems   = ["3", "4", "5"]
+  bool subjectMatchesMeta(
+    SubjectModel subject, {
+    String? regulation,  // e.g. "2021" or "21"
+    String? department,  // e.g. "CB"
+    int? semester,       // e.g. 3
+  }) {
+    final mapping = subject.metaMapping;
+    if (mapping.isEmpty) return false;
+
+    final parts = mapping.split('\$');
+    if (parts.length < 3) return false;
+
+    final regs = parts[0].split('^');   // ["21","25"]
+    final depts = parts[1].split('^');  // ["CB","CS","AD"]
+    final sems = parts[2].split('^');   // ["3","4","5"]
+
+    if (regulation != null) {
+      final regKey =
+          regulation.length == 4 ? regulation.substring(2) : regulation;
+      if (!regs.contains(regKey)) return false;
+    }
+
+    if (department != null) {
+      if (!depts.contains(department)) return false;
+    }
+
+    if (semester != null) {
+      if (!sems.contains(semester.toString())) return false;
+    }
+
+    return true;
   }
 }

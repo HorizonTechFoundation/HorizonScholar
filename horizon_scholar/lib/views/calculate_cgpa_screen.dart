@@ -29,8 +29,6 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
   void _showSubjectPickerBottomSheet(BuildContext context, int semester) {
     final searchText = ''.obs;
 
-    // Don't capture templates into a local final List.
-    // Always read from controller so you see latest data.
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -69,7 +67,7 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Search box (doesn't actually need Obx)
+                  // Search box
                   TextField(
                     onChanged: (val) => searchText.value = val,
                     decoration: InputDecoration(
@@ -88,22 +86,18 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
                   // List of subjects
                   Expanded(
                     child: Obx(() {
-                      final templates = calcController.templates; // new every time
+                      final templates = calcController.templates;
                       final query = searchText.value.toLowerCase();
 
                       final filtered = templates.where((s) {
-                        final code = (s.code).toLowerCase();
+                        final code = s.code.toLowerCase();
                         final name = s.name.toLowerCase();
 
                         if (query.isEmpty) return true;
 
                         return code.contains(query) || name.contains(query);
                       }).toList()
-                        ..sort((a, b) {
-                          final codeA = a.code;
-                          final codeB = b.code;
-                          return codeA.compareTo(codeB);
-                        });
+                        ..sort((a, b) => a.code.compareTo(b.code));
 
                       if (filtered.isEmpty) {
                         return const Center(
@@ -121,10 +115,9 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
                         itemBuilder: (_, index) {
                           final subject = filtered[index];
 
-                          final displayCode =
-                              (subject.code == "")
-                                  ? "No Code"
-                                  : subject.code;
+                          final displayCode = subject.code.isEmpty
+                              ? "No Code"
+                              : subject.code;
 
                           return Card(
                             color: Colors.white,
@@ -143,9 +136,7 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
                                 style: const TextStyle(fontSize: 12),
                               ),
                               onTap: () async {
-                                // If template has no code, reject it gracefully
-                                if (subject.code == "" ||
-                                    subject.code.trim().isEmpty) {
+                                if (subject.code.trim().isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
@@ -200,6 +191,287 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
     );
   }
 
+  // ------------------- DEPT-BASED SUBJECT PICKER (NEW) -------------------
+
+  void _showDeptBasedSubjectPicker(BuildContext context, int semester) {
+    // UI values for regulations & departments
+    final regs = ['2021', '2025'];
+    final depts = [
+      {'code': 'CB', 'label': 'CSBS'},
+      {'code': 'CS', 'label': 'CSE'},
+      {'code': 'AD', 'label': 'AIDS'},
+    ];
+
+    final selectedReg = RxnString();
+    final selectedDeptCode = RxnString();
+    final selectedCodes = <String>[].obs; // selected subject codes
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFFF6F1F1),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.85,
+          minChildSize: 0.6,
+          maxChildSize: 0.95,
+          builder: (_, scrollController) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header
+                  Row(
+                    children: [
+                      const Text(
+                        "Choose by Department",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(ctx).pop(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Regulation dropdown
+                  Obx(() {
+                    return DropdownButtonFormField<String>(
+                      value: selectedReg.value,
+                      decoration: InputDecoration(
+                        labelText: "Regulation",
+                        labelStyle: GoogleFonts.poppins(fontSize: 13),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      items: regs
+                          .map(
+                            (r) => DropdownMenuItem(
+                              value: r,
+                              child: Text("Reg $r"),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        selectedReg.value = val;
+                        selectedCodes.clear();
+                      },
+                    );
+                  }),
+                  const SizedBox(height: 10),
+
+                  // Department dropdown
+                  Obx(() {
+                    return DropdownButtonFormField<String>(
+                      value: selectedDeptCode.value,
+                      decoration: InputDecoration(
+                        labelText: "Department",
+                        labelStyle: GoogleFonts.poppins(fontSize: 13),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      items: depts
+                          .map(
+                            (d) => DropdownMenuItem(
+                              value: d['code'],
+                              child: Text(d['label']!),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        selectedDeptCode.value = val;
+                        selectedCodes.clear();
+                      },
+                    );
+                  }),
+                  const SizedBox(height: 12),
+
+                  // Subject list based on metaMapping filter
+                  Expanded(
+                    child: Obx(() {
+                      final reg = selectedReg.value;
+                      final deptCode = selectedDeptCode.value;
+
+                      // 🔑 This line makes Obx listen to selectedCodes too
+                      final selectedList = selectedCodes.toList();
+
+                      if (reg == null || deptCode == null) {
+                        return Center(
+                          child: Text(
+                            "Select regulation and department to view subjects\nfor Sem $semester",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(fontSize: 13),
+                          ),
+                        );
+                      }
+
+                      final templates = calcController.templates;
+                      final filtered = templates.where((s) {
+                        return calcController.subjectMatchesMeta(
+                          s,
+                          regulation: reg,
+                          department: deptCode,
+                          semester: semester,
+                        );
+                      }).toList()
+                        ..sort((a, b) => a.code.compareTo(b.code));
+
+                      if (filtered.isEmpty) {
+                        return Center(
+                          child: Text(
+                            "No subjects mapped for this combination.\n(Reg $reg • ${depts.firstWhere((d) => d['code'] == deptCode)['label']} • Sem $semester)",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(fontSize: 13),
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        controller: scrollController,
+                        itemCount: filtered.length,
+                        itemBuilder: (_, index) {
+                          final subject = filtered[index];
+                          final code = subject.code;
+                          final isSelected = selectedList.contains(code);
+
+                          return Card(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: CheckboxListTile(
+                              value: isSelected,
+                              onChanged: (val) {
+                                if (val == true) {
+                                  if (!selectedCodes.contains(code)) {
+                                    selectedCodes.add(code);
+                                  }
+                                } else {
+                                  selectedCodes.remove(code);
+                                }
+                                selectedCodes.refresh(); // fine to keep
+                              },
+                              title: Text(
+                                "${subject.code} - ${subject.name}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "${subject.credits.toStringAsFixed(1)} credits",
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              controlAffinity: ListTileControlAffinity.leading,
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+
+
+                  const SizedBox(height: 8),
+
+                  // Add selected button
+                  Obx(() {
+                    final hasSelection = selectedCodes.isNotEmpty;
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              hasSelection ? _primary : Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 10,
+                          ),
+                        ),
+                        onPressed: hasSelection
+                            ? () async {
+                                final reg = selectedReg.value;
+                                final deptCode = selectedDeptCode.value;
+                                if (reg == null || deptCode == null) return;
+
+                                final templates = calcController.templates;
+
+                                final toAdd = templates.where((s) {
+                                  if (!selectedCodes.contains(s.code)) {
+                                    return false;
+                                  }
+                                  return calcController.subjectMatchesMeta(
+                                    s,
+                                    regulation: reg,
+                                    department: deptCode,
+                                    semester: semester,
+                                  );
+                                }).toList();
+
+                                for (final t in toAdd) {
+                                  await calcController.addSubjectFromTemplate(
+                                    t,
+                                    semester,
+                                  );
+                                }
+
+                                await calcController.recalculateAll();
+
+                                Navigator.of(ctx).pop();
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Added ${toAdd.length} subject(s) to Sem $semester",
+                                    ),
+                                  ),
+                                );
+                              }
+                            : null,
+                        child: Text(
+                          hasSelection
+                              ? "Add selected subjects"
+                              : "Select subjects to add",
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   // ------------------- ADD SUBJECT OPTIONS SHEET -------------------
 
@@ -240,6 +512,18 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
                 onTap: () {
                   Navigator.of(ctx).pop();
                   _showSubjectPickerBottomSheet(context, semester);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.account_tree_outlined),
+                title: const Text("Choose using department"),
+                subtitle: const Text(
+                  "Regulation • Department • Multi-select",
+                  style: TextStyle(fontSize: 12),
+                ),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  _showDeptBasedSubjectPicker(context, semester);
                 },
               ),
               ListTile(
@@ -458,7 +742,8 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
           final cgpa = calcController.cgpa.value;
 
           final subjectsForSem = _subjectsForSem(subjects, _selectedSemester);
-
+          subjectsForSem.sort((a, b) => a.code.compareTo(b.code));
+          
           return Column(
             children: [
               // TOP SUMMARY CARD
@@ -635,7 +920,7 @@ class _CalculateCgpaScreenState extends State<CalculateCgpaScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                           (subject.code.isNotEmpty)
+                                          subject.code.isNotEmpty
                                               ? "${subject.code} - ${subject.name}"
                                               : subject.name,
                                           style: GoogleFonts.poppins(
