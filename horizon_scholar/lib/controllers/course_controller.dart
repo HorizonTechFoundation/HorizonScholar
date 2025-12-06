@@ -65,6 +65,17 @@ class CourseController extends GetxController {
     }
   }
 
+  Future<void> clearAllCourses() async {
+    await courseBox.clear();
+    courseList.clear();
+    _refreshCategories();
+
+    // Also sync Vault to remove course-linked docs
+    if (Get.isRegistered<DocumentController>()) {
+      await Get.find<DocumentController>().syncFromCourses();
+    }
+  }
+
 
   // ---------- Categories ----------
   void _refreshCategories() {

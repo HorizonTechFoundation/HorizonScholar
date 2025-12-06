@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/cgpa_controller.dart';
 import '../controllers/course_controller.dart';
 import '../controllers/document_controller.dart';
+import '../controllers/theme_controller.dart'; 
 // import '../screens/cgpa_screen.dart';
 // import '../screens/course_screen.dart';
 // import '../screens/vault_screen.dart';
@@ -19,6 +20,9 @@ class HomeScreen extends StatelessWidget {
   static const _accent = Color(0xFFAFD3E2);
 
   // Safely get controllers (create if not registered)
+
+  final ThemeController themeController = Get.find<ThemeController>();
+
   final CgpaController cgpaController =
       Get.isRegistered<CgpaController>() ? Get.find<CgpaController>() : Get.put(CgpaController());
 
@@ -30,6 +34,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Obx(() {
+    final palette = themeController.palette;
+
     return Scaffold(
       backgroundColor: _bgColor,
       body: SafeArea(
@@ -82,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: _primary,
+                              color: palette.primary,
                             ),
                           ),
                         ],
@@ -129,7 +136,7 @@ class HomeScreen extends StatelessWidget {
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 46,
-                                color: _primary,
+                                color: palette.primary,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -174,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _primary,
+                              backgroundColor: palette.primary,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               shape: RoundedRectangleBorder(
@@ -210,7 +217,7 @@ class HomeScreen extends StatelessWidget {
                         title: "Courses completed",
                         value: completedCourses.toString(),
                         icon: Icons.playlist_add_check_rounded,
-                        primary: _primary,
+                        primary: palette.primary,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -219,7 +226,7 @@ class HomeScreen extends StatelessWidget {
                         title: "Documents saved",
                         value: totalDocuments.toString(),
                         icon: Icons.folder_special_outlined,
-                        primary: _primary,
+                        primary: palette.primary,
                       ),
                     ),
                   ],
@@ -319,9 +326,9 @@ class HomeScreen extends StatelessWidget {
                             color: _primary.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.insert_drive_file_outlined,
-                            color: _primary,
+                            color: palette.primary,
                             size: 22,
                           ),
                         ),
@@ -365,7 +372,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               child: Icon(
                                 _iconForType(doc.type),
-                                color: _primary,
+                                color: palette.primary,
                                 size: 22,
                               ),
                             ),
@@ -412,6 +419,7 @@ class HomeScreen extends StatelessWidget {
         }),
       ),
     );
+  });
   }
 
   IconData _iconForType(String type) {

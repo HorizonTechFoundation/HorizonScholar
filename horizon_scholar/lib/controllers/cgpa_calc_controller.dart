@@ -294,6 +294,28 @@ class CgpaCalcController extends GetxController {
     await recalculateAll();
   }
 
+  Future<void> clearAllCgpaData() async {
+    // 1) Delete all non-template subjects (semester > 0)
+    final toDelete = subjects.where((s) => s.semester > 0).toList();
+    for (final s in toDelete) {
+      await s.delete();      // remove from Hive
+      subjects.remove(s);    // remove from in-memory list
+    }
+
+    // 2) Clear GPA records
+    await gpaBox.clear();
+    gpas.clear();
+
+    // 3) Reset CGPA value
+    cgpa.value = 0.0;
+
+    // 4) Also clear CGPA summary box (CgpaController)
+    if (Get.isRegistered<CgpaController>()) {
+      final cgCtrl = Get.find<CgpaController>();
+      await cgCtrl.clearAllCgpa();
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Helper for filtering by metaMapping (reg, dept, sem)
   // ---------------------------------------------------------------------------

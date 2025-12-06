@@ -119,6 +119,19 @@ class DocumentController extends GetxController {
     documents.refresh();
   }
 
+  Future<void> clearAllDocuments() async {
+    await _box.clear();
+    documents.clear();
+
+    // Reset categories to defaults
+    categories
+      ..clear()
+      ..addAll(['All', 'Important', 'Course']);
+
+    selectedCategory.value = 'All';
+    showFavoritesOnly.value = false;
+  }
+
 
   Future<void> syncFromCourses() async {
     final courseBox = Hive.box<CourseModel>('courseBox');

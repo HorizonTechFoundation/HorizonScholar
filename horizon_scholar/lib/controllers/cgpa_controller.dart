@@ -40,6 +40,11 @@ class CgpaController extends GetxController {
     loadCgpa();
   }
 
+  Future<void> clearAllCgpa() async {
+    await cgpaBox.clear();
+    cgpaList.clear();
+  }
+
   /// Convenience: get the latest CGPA (or null if none)
   CgpaModel? get latestCgpa {
     if (cgpaList.isEmpty) return null;

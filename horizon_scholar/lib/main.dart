@@ -21,6 +21,7 @@ import 'models/subject_model.dart';
 import 'models/gpa_model.dart';
 
 import 'controllers/cgpa_calc_controller.dart';
+import 'controllers/theme_controller.dart';
 
 // =====
 
@@ -40,27 +41,36 @@ void main() async {
   await Hive.openBox<SubjectModel>('subjectBox');
   await Hive.openBox<GpaModel>('gpaBox');
 
-  Get.put(CgpaCalcController(), permanent: true);
+  final settingsBox = await Hive.openBox('settingsBox');
 
+  Get.put(CgpaCalcController(), permanent: true);
+  Get.put(ThemeController(settingsBox), permanent: true);
   
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  MyApp({super.key});
+
+
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Horizon Scholar',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/',
-      getPages: [
-        GetPage(name: '/', page: () => MainScreen()),
-        GetPage(name: '/home', page: () => HomeScreen()),
-        GetPage(name: '/cgpa', page: () => CGPAScreen()),
-        GetPage(name: '/vault', page: () => VaultScreen()),
-        GetPage(name: '/courses', page: () => CourseScreen()),
-      ],
+    return GetX<ThemeController>(
+      builder: (themeController) {
+        return GetMaterialApp(
+          title: 'Horizon Scholar',
+          debugShowCheckedModeBanner: false,
+          theme: themeController.themeData,
+          initialRoute: '/',
+          getPages: [
+            GetPage(name: '/', page: () => MainScreen()),
+            GetPage(name: '/home', page: () => HomeScreen()),
+            GetPage(name: '/cgpa', page: () => CGPAScreen()),
+            GetPage(name: '/vault', page: () => VaultScreen()),
+            GetPage(name: '/courses', page: () => CourseScreen()),
+          ],
+        );
+      },
     );
   }
 }
