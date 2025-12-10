@@ -15,10 +15,6 @@ class HomeScreen extends StatelessWidget {
 
   final void Function(int)? onNavigate;
 
-  static const _bgColor = Color(0xFFF6F1F1);
-  static const _primary = Color(0xFF146C94);
-  static const _accent = Color(0xFFAFD3E2);
-
   // Safely get controllers (create if not registered)
 
   final ThemeController themeController = Get.find<ThemeController>();
@@ -38,7 +34,7 @@ class HomeScreen extends StatelessWidget {
     final palette = themeController.palette;
 
     return Scaffold(
-      backgroundColor: _bgColor,
+      backgroundColor: palette.bg,
       body: SafeArea(
         child: Obx(() {
           // ----- CGPA DATA -----
@@ -64,17 +60,17 @@ class HomeScreen extends StatelessWidget {
                       "Horizon Scholar",
                       style: GoogleFonts.righteous(
                         fontSize: 22,
-                        color: Colors.black87,
+                        color: palette.blackMain,
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: palette.secondary,
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
+                            color: palette.blackMain.withOpacity(0.06),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -82,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.code, size: 18, color: _primary),
+                          Icon(Icons.code, size: 18, color: palette.primary),
                           const SizedBox(width: 6),
                           Text(
                             "Horizon",
@@ -103,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                   "Welcome back !",
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: Colors.grey[700],
+                    color: palette.blackMain.withAlpha(150),
                   ),
                 ),
 
@@ -114,11 +110,11 @@ class HomeScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.only(top: 20, bottom: 20,right: 18, left: 30),
                   decoration: BoxDecoration(
-                    color: _accent,
+                    color: palette.primary,
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: palette.blackMain.withOpacity(0.08),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -136,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 46,
-                                color: palette.primary,
+                                color: palette.minimal,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -144,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                               "Current CGPA",
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                color: Colors.black87,
+                                color: palette.minimal.withAlpha(200),
                               ),
                             ),
                           ],
@@ -160,19 +156,19 @@ class HomeScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: palette.primary,
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.timeline_outlined, size: 16, color: _primary),
-                                const SizedBox(width: 6),
+                                Icon(Icons.timeline_outlined, size: 17, color: palette.whiteMain),
+                                const SizedBox(width: 10),
                                 Text(
                                   currentSem == 0 ? "No semesters added" : "Upto Sem $currentSem",
                                   style: GoogleFonts.poppins(
-                                    fontSize: 11,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
+                                    color: palette.whiteMain,
                                   ),
                                 ),
                               ],
@@ -181,7 +177,7 @@ class HomeScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: palette.primary,
+                              backgroundColor: palette.minimal,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               shape: RoundedRectangleBorder(
@@ -191,13 +187,13 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {
                               onNavigate?.call(1);
                             },
-                            icon: const Icon(Icons.auto_awesome, size: 18, color: Colors.white),
+                            icon: Icon(Icons.auto_awesome, size: 18, color: palette.primary),
                             label: Text(
                               "Try New AI Features",
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white,
+                                color: palette.primary,
                               ),
                             ),
                           ),
@@ -218,6 +214,9 @@ class HomeScreen extends StatelessWidget {
                         value: completedCourses.toString(),
                         icon: Icons.playlist_add_check_rounded,
                         primary: palette.primary,
+                        secondary: palette.secondary,
+                        whiteMain: palette.whiteMain,
+                        blackMain: palette.blackMain,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -227,6 +226,9 @@ class HomeScreen extends StatelessWidget {
                         value: totalDocuments.toString(),
                         icon: Icons.folder_special_outlined,
                         primary: palette.primary,
+                        secondary: palette.secondary,
+                        whiteMain: palette.whiteMain,
+                        blackMain: palette.blackMain,
                       ),
                     ),
                   ],
@@ -243,14 +245,14 @@ class HomeScreen extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: palette.blackMain,
                       ),
                     ),
                     Text(
                       "Tap to open",
                       style: GoogleFonts.poppins(
                         fontSize: 11,
-                        color: Colors.grey[600],
+                        color: palette.blackMain.withAlpha(150),
                       ),
                     ),
                   ],
@@ -272,6 +274,10 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         onNavigate?.call(1);
                       },
+                      primary: palette.primary,
+                      secondary: palette.secondary,
+                      whiteMain: palette.whiteMain,
+                      blackMain: palette.blackMain,
                     ),
                     _QuickActionButton(
                       icon: Icons.menu_book_outlined,
@@ -279,6 +285,10 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         onNavigate?.call(2);
                       },
+                      primary: palette.primary,
+                      secondary: palette.secondary,
+                      whiteMain: palette.whiteMain,
+                      blackMain: palette.blackMain,
                     ),
                     _QuickActionButton(
                       icon: Icons.lock_outline,
@@ -286,6 +296,10 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         onNavigate?.call(3);
                       },
+                      primary: palette.primary,
+                      secondary: palette.secondary,
+                      whiteMain: palette.whiteMain,
+                      blackMain: palette.blackMain,
                     ),
                   ],
                 ),
@@ -298,7 +312,7 @@ class HomeScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: palette.blackMain,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -308,11 +322,11 @@ class HomeScreen extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: palette.secondary,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: palette.blackMain.withOpacity(0.04),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -323,7 +337,7 @@ class HomeScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: _primary.withOpacity(0.08),
+                            color: palette.primary.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
@@ -338,7 +352,7 @@ class HomeScreen extends StatelessWidget {
                             "No documents yet.\nSave your certificates, notes and PDFs in the Vault.",
                             style: GoogleFonts.poppins(
                               fontSize: 12,
-                              color: Colors.grey[700],
+                              color: palette.blackMain.withAlpha(200),
                             ),
                           ),
                         ),
@@ -352,11 +366,11 @@ class HomeScreen extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: palette.secondary,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: palette.blackMain.withOpacity(0.04),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -367,7 +381,7 @@ class HomeScreen extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: _primary.withOpacity(0.08),
+                                color: palette.primary.withOpacity(0.08),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Icon(
@@ -388,7 +402,7 @@ class HomeScreen extends StatelessWidget {
                                     style: GoogleFonts.poppins(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
+                                      color: palette.blackMain,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -398,7 +412,7 @@ class HomeScreen extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.poppins(
                                       fontSize: 11,
-                                      color: Colors.grey[600],
+                                      color: palette.blackMain.withAlpha(100),
                                     ),
                                   ),
                                 ],
@@ -439,12 +453,18 @@ class _StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color primary;
+  final Color secondary;
+  final Color whiteMain;
+  final Color blackMain;
 
   const _StatCard({
     required this.title,
     required this.value,
     required this.icon,
     required this.primary,
+    required this.secondary,
+    required this.whiteMain,
+    required this.blackMain,
   });
 
   @override
@@ -452,11 +472,11 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: secondary,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: blackMain.withOpacity(0.04),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -483,7 +503,7 @@ class _StatCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     fontSize: 11,
-                    color: Colors.grey[700],
+                    color: blackMain.withAlpha(200),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -509,27 +529,34 @@ class _QuickActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final Color primary;
+  final Color secondary;
+  final Color whiteMain;
+  final Color blackMain;
 
   const _QuickActionButton({
     required this.icon,
     required this.label,
     required this.onTap,
+    required this.primary,
+    required this.secondary,
+    required this.whiteMain,
+    required this.blackMain,
   });
 
   @override
   Widget build(BuildContext context) {
-    const primary = Color(0xFF146C94);
-
+    
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: onTap,
       child: Ink(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: secondary,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: blackMain.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -559,7 +586,7 @@ class _QuickActionButton extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: blackMain,
                 ),
               ),
             ],

@@ -112,28 +112,44 @@ class SettingsScreen extends StatelessWidget {
               runSpacing: 10,
               children: [
                 _ThemeChip(
-                  label: "Sea Blue",
-                  theme: AppTheme.seaBlue,
+                  label: "Horizon Blue",
+                  theme: AppTheme.horizonblue,
                   isSelected:
-                      themeController.selectedTheme.value == AppTheme.seaBlue,
+                      themeController.selectedTheme.value == AppTheme.horizonblue,
                   color: const Color(0xFF146C94),
-                  onTap: () => themeController.changeTheme(AppTheme.seaBlue),
+                  onTap: () => themeController.changeTheme(AppTheme.horizonblue),
                 ),
                 _ThemeChip(
-                  label: "Forest Green",
-                  theme: AppTheme.forestGreen,
+                  label: "Rosé Glow",
+                  theme: AppTheme.roseglow,
                   isSelected: themeController.selectedTheme.value ==
-                      AppTheme.forestGreen,
-                  color: const Color(0xFF2E7D32),
-                  onTap: () => themeController.changeTheme(AppTheme.forestGreen),
+                      AppTheme.roseglow,
+                  color: const Color(0xFFDD88CF),
+                  onTap: () => themeController.changeTheme(AppTheme.roseglow),
                 ),
                 _ThemeChip(
-                  label: "Fire Red",
-                  theme: AppTheme.fireRed,
+                  label: "Evergreen",
+                  theme: AppTheme.evergreen,
+                  isSelected: themeController.selectedTheme.value ==
+                      AppTheme.evergreen,
+                  color: const Color(0xFF2E7D32),
+                  onTap: () => themeController.changeTheme(AppTheme.evergreen),
+                ),
+                _ThemeChip(
+                  label: "Midnight Gold",
+                  theme: AppTheme.midnightgold,
                   isSelected:
-                      themeController.selectedTheme.value == AppTheme.fireRed,
-                  color: const Color(0xFFC62828),
-                  onTap: () => themeController.changeTheme(AppTheme.fireRed),
+                      themeController.selectedTheme.value == AppTheme.midnightgold,
+                  color: const Color(0xFFFFC052),
+                  onTap: () => themeController.changeTheme(AppTheme.midnightgold),
+                ),
+                _ThemeChip(
+                  label: "Coffee",
+                  theme: AppTheme.coffee,
+                  isSelected:
+                      themeController.selectedTheme.value == AppTheme.coffee,
+                  color: const Color(0xFF74512D),
+                  onTap: () => themeController.changeTheme(AppTheme.coffee),
                 ),
               ],
             ),

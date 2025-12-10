@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
+// BG
+// Secondary & White
+// Primary
+// Black / Primary
+
 enum AppTheme {
-  seaBlue,
-  forestGreen,
-  fireRed,
+  horizonblue,
+  evergreen,
+  roseglow,
+  midnightgold,
+  coffee
 }
 
 class AppPalette {
@@ -15,7 +22,8 @@ class AppPalette {
   final Color minimal;
   final Color whiteMain;
   final Color blackMain;
-  final Color optional;
+  final Color accent;
+  final Color theme;
 
   const AppPalette({
     required this.primary,
@@ -24,37 +32,82 @@ class AppPalette {
     required this.minimal,
     required this.whiteMain,
     required this.blackMain,
-    required this.optional,
+    required this.accent,
+    required this.theme,
   });
 }
 
 const Map<AppTheme, AppPalette> _palettes = {
-  AppTheme.seaBlue: AppPalette(
+  AppTheme.horizonblue: AppPalette(
     primary: Color(0xFF146C94),
-    secondary: Color(0xFF19A7CE),
+    secondary: Color(0xFFFFFFFF),
+
     bg: Color(0xFFF6F1F1),
-    minimal: Color(0xFFE3F2FD),
-    whiteMain: Colors.white,
-    blackMain: Colors.black87,
-    optional: Color(0xFFAFD3E2),
+    minimal: Color(0xFFF6F1F1),
+    whiteMain: Color(0xFFF6F1F1),
+
+    blackMain: Color(0xFF163172),
+    accent: Color(0xFF163172),
+
+    theme : Color(0xFFFFFFFF)
+
   ),
-  AppTheme.forestGreen: AppPalette(
-    primary: Color(0xFF2E7D32),
-    secondary: Color(0xFF66BB6A),
-    bg: Color.fromARGB(255, 136, 255, 0),
-    minimal: Color(0xFFE8F5E9),
-    whiteMain: Colors.white,
-    blackMain: Colors.black87,
-    optional: Color(0xFFA5D6A7),
+  AppTheme.evergreen: AppPalette(
+    primary: Color(0xFF4C763B),
+    secondary: Color(0xFFFDFAF6),
+
+    bg: Color(0xFFFAF6E9),
+    minimal: Color(0xFFFAF6E9),
+    whiteMain: Color(0xFFFAF6E9),
+
+    blackMain: Color(0xFF043915),
+    accent: Color(0xFF043915),
+
+    theme : Color(0xFFFFFFFF)
+
   ),
-  AppTheme.fireRed: AppPalette(
-    primary: Color(0xFFC62828),
-    secondary: Color(0xFFEF5350),
-    bg: Color.fromARGB(255, 255, 0, 38),
-    minimal: Color(0xFFFFCDD2),
-    whiteMain: Colors.white,
-    blackMain: Colors.black87,
-    optional: Color(0xFFE57373),
+  AppTheme.roseglow: AppPalette(
+    primary: Color(0xFF4B164C),
+    secondary: Color(0xFFF8E7F6),
+
+    bg: Color(0xFFF5F5F5),
+    minimal: Color(0xFFF5F5F5),
+    whiteMain: Color(0xFFF5F5F5),
+
+    blackMain: Color(0xFF4B164C),
+    accent: Color(0xFF4B164C),
+
+    theme : Color(0xFFFFFFFF)
+
+  ),
+  AppTheme.midnightgold: AppPalette(
+    primary: Color(0xFFFFCB74),
+    secondary: Color(0xFF2F2F2F),
+
+    bg: Color(0xFF131313),
+    minimal: Color(0xFF2F2F2F),
+    whiteMain: Color(0xFF131313),
+
+    blackMain: Color(0xFFF6F6F6),
+    accent: Color(0xFFF6F6F6),
+
+    theme : Color(0xFF111111)
+
+  ),
+
+  AppTheme.coffee: AppPalette(
+    primary: Color(0xFF74512D),
+    secondary: Color(0xFFE7D3C0),
+
+    bg: Color(0xFFFCF7EF),
+    minimal: Color(0xFFFCF7EF),
+    whiteMain: Color(0xFFFCF7EF),
+
+    blackMain: Color(0xFF543310),
+    accent: Color(0xFF543310),
+
+    theme : Color(0xFFFFFFFF)
+
   ),
 };
 
@@ -66,7 +119,7 @@ class ThemeController extends GetxController {
 
   static const _themeKey = 'selectedTheme';
 
-  final Rx<AppTheme> selectedTheme = AppTheme.seaBlue.obs;
+  final Rx<AppTheme> selectedTheme = AppTheme.horizonblue.obs;
 
   AppPalette get palette => _palettes[selectedTheme.value]!;
 
@@ -80,7 +133,7 @@ class ThemeController extends GetxController {
 
   void _loadThemeFromStorage() {
     final savedIndex =
-        _settingsBox.get(_themeKey, defaultValue: AppTheme.seaBlue.index);
+        _settingsBox.get(_themeKey, defaultValue: AppTheme.horizonblue.index);
     selectedTheme.value = AppTheme.values[savedIndex];
   }
 

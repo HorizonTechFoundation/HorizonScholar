@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 // Define your pages somewhere
 import 'home_screen.dart';
@@ -9,6 +9,8 @@ import 'vault_screen.dart';
 import 'settings_screen.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import '../controllers/theme_controller.dart'; 
+
 
 class MainScreen extends StatefulWidget {
   @override
@@ -17,6 +19,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+
+  final ThemeController themeController = Get.find<ThemeController>();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -39,17 +43,32 @@ class _MainScreenState extends State<MainScreen> {
       VaultScreen(),
       SettingsScreen(),
     ];
+    
 
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: pages,
-      ),
-      bottomNavigationBar: _buildBottomBar(),
-    );
+    return Obx((){
+      final palette = themeController.palette;
+      return Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: pages,
+        ),
+        bottomNavigationBar: _buildBottomBar(
+          primary: palette.primary,
+          secondary: palette.secondary,
+          theme: palette.theme,
+          blackMain: palette.blackMain,
+        ),
+      );
+    });
   }
 
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar({
+      required Color primary,
+      required Color secondary,
+      required Color theme,
+      required Color blackMain,
+    }) {
+    
     final icons = [
       Icons.home_rounded,
       Icons.calculate,
@@ -63,11 +82,11 @@ class _MainScreenState extends State<MainScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme,
         borderRadius: BorderRadius.circular(0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: blackMain.withOpacity(0.03),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -88,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
                 vertical: 10,
               ),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF146C94) : Colors.white,
+                color: isSelected ? primary : theme,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Row(
@@ -96,14 +115,14 @@ class _MainScreenState extends State<MainScreen> {
                   Icon(
                     icons[index],
                     size: 22,
-                    color: isSelected ? Colors.white : Colors.grey[700],
+                    color: isSelected ? theme : Colors.grey[700],
                   ),
                   if (isSelected) ...[
                     const SizedBox(width: 8),
                     Text(
                       labels[index],
                       style: GoogleFonts.poppins(
-                        color: Colors.white,
+                        color: theme,
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),
